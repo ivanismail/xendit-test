@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Payment;
 use Xendit\Xendit;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 class XenditController extends Controller
 {
@@ -29,14 +30,21 @@ class XenditController extends Controller
             "bank_code" => $request->bank,
             "name" => $request->name,
             "expected_amount" => $request->amount,
-            "is_closed" => true
-
+            "is_closed" => true,
+            "expiration_date" => Carbon::now()->addDays(1)->toISOString(), //expired 1 hari
+            "is_single_use" => true //setelah dibayar akan nonaktif
           ];
+
+        $insert =  
         
         $createVA = \Xendit\VirtualAccounts::create($params);
-
         return response()->json([
             'data' => $createVA
         ])->setStatusCode(200);
+    }
+
+    public function callbackVA(Request $request)
+    {
+
     }
 }
